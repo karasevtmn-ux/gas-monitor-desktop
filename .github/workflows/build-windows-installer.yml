@@ -1,29 +1,41 @@
+name: Build Windows Installer
 
+on:
+  workflow_dispatch:
 
-#define AppName "GAS Monitor"
-#define AppExeName "GASMonitor.exe"
-#define AppVersion "0.2"
+jobs:
+  build-installer:
+    runs-on: windows-latest
 
-[Setup]
-AppId={{9A9F0A0C-9D08-4C7A-9C9B-0B6E9E0F8E77}
-AppName={#AppName}
-AppVersion={#AppVersion}
-DefaultDirName={autopf}\{#AppName}
-DefaultGroupName={#AppName}
-OutputBaseFilename=GASMonitor-Setup
-Compression=lzma
-SolidCompression=yes
-WizardStyle=modern
-PrivilegesRequired=lowest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-[Languages]
-Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-[Files]
-Source: "dist\GASMonitor\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-[Icons]
-Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
+      - name: Build EXE (onedir)
+        run: |
+          pyinstaller --clean --noconsole --onedir --name GASMonitor app.py
 
-[Run]
-Filename: "{app}\{#AppExeName}"; Description: "Запустить"; Flags: nowait postinstall skipifsilent
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup -y
+
+      - name: Build installer (Inno Setup)
+        run: |
+          iscc installer\GASMonitor.iss
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GASMonitor-Installer
+          path: installer/Output/GASMonitor-Setup.exe
