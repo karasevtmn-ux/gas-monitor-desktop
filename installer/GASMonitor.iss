@@ -22,7 +22,7 @@ Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
 Source: "dist\GASMonitor\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
 [Icons]
-Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
+Name: "{group}{#AppName}"; Filename: "{app}\{#AppExeName}"
 
 [Run]
-Filename: "{app}\{#AppExeName}"; Description: "Запустить"; Flags: nowait postinstall skipifsilent
+Filename: "{app}{#AppExeName}"; Description: "Запустить"; Flags: nowait postinstall skipifsilent
