@@ -19,7 +19,7 @@ PrivilegesRequired=lowest
 Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
 
 [Files]
-Source: "dist\GASMonitor\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
+Source: "distGASMonitor"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 
 [Icons]
 Name: "{group}{#AppName}"; Filename: "{app}\{#AppExeName}"
